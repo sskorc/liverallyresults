@@ -92,7 +92,7 @@ class RallyController extends FOSRestController
             throw new HttpException(400, 'Missing required parameters');
         }
 
-        $stage = new Stage($number, $name, new \DateTime($startTime), $distance);
+        $stage = new Stage((int) $number, $name, new \DateTime($startTime), $distance);
 
         $rally->addStage($stage);
 
@@ -165,6 +165,27 @@ class RallyController extends FOSRestController
         $dm->flush();
 
         $view = $this->view($crew, 201);
+
+        return $this->handleView($view);
+    }
+
+    public function getRalliesStagesResultsAction($rallyId, $stageNumber)
+    {
+        $dm = $this->get('doctrine_mongodb')->getManager();
+
+        $rally = $dm->getRepository('AppBundle:Rally')->findOneById($rallyId);
+        if (empty($rally)) {
+            throw new HttpException(400, 'Cannot find rally');
+        }
+
+        $stage = $rally->getStageByNumber($stageNumber);
+        if (empty($stage)) {
+            throw new HttpException(400, 'Cannot find stage');
+        }
+
+        $results = $stage->getResults();
+
+        $view = $this->view($results, 200);
 
         return $this->handleView($view);
     }

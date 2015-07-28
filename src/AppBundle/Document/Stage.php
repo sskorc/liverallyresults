@@ -28,7 +28,6 @@ class Stage
 
     /**
      * @MongoDB\EmbedMany(targetDocument="AppBundle\Document\StageResult")
-     * @JMS\Exclude
      */
     protected $results;
 
@@ -39,6 +38,7 @@ class Stage
 
     public function __construct($number, $name, $startTime, $distance)
     {
+        $this->$results = array();
         $this->number = $number;
         $this->name = $name;
         $this->startTime = $startTime;
@@ -84,6 +84,18 @@ class Stage
 
     public function addResult(StageResult $result)
     {
-        $this->results[] = $result;
+        if (!empty($this->results)) {
+            foreach ($this->results as $key => $value) {
+                if ($value->getTimeAndPenalty() >= $result->getTimeAndPenalty()) {
+                    $position = $key;
+                    array_splice($this->results, $position, 0, array($result));
+                    return;
+                }
+            }
+            array_push($this->results, $result);
+        } else {
+            $this->results[0] = $result;
+        }
+
     }
 }

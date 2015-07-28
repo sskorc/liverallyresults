@@ -126,7 +126,7 @@ class Rally
 
     public function getStageByNumber($number)
     {
-        return $this->stages[$number];
+        return $this->stages[$number-1];
     }
 
     public function updateStage($stage)

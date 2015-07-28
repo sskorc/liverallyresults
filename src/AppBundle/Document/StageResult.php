@@ -12,6 +12,7 @@ class StageResult
 {
     /**
      * @MongoDB\Id(strategy="auto")
+     * @JMS\Exclude
      */
     protected $id;
 
@@ -55,6 +56,8 @@ class StageResult
         $this->crew = $crew;
         $this->time = $time;
         $this->penalty = $penalty;
+
+        $this->timeAndPenalty = $time + $penalty;
     }
 
     /**
@@ -63,14 +66,6 @@ class StageResult
     public function setPosition($position)
     {
         $this->position = $position;
-    }
-
-    /**
-     * @param mixed $timeAndPenalty
-     */
-    public function setTimeAndPenalty($timeAndPenalty)
-    {
-        $this->timeAndPenalty = $timeAndPenalty;
     }
 
     /**
@@ -102,7 +97,7 @@ class StageResult
      */
     public function getPosition()
     {
-        return $this->position;
+        return $this->position + 1;
     }
 
     /**
