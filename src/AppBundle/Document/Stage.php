@@ -27,6 +27,12 @@ class Stage
     protected $startTime;
 
     /**
+     * @MongoDB\EmbedMany(targetDocument="AppBundle\Document\StageResult")
+     * @JMS\Exclude
+     */
+    protected $results;
+
+    /**
      * @MongoDB\Float
      */
     protected $distance;
@@ -69,5 +75,15 @@ class Stage
     public function getDistance()
     {
         return $this->distance;
+    }
+
+    public function getResults()
+    {
+        return $this->results;
+    }
+
+    public function addResult(StageResult $result)
+    {
+        $this->results[] = $result;
     }
 }

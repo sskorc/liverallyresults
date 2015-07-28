@@ -55,6 +55,7 @@ class Rally
         $this->startDate = $startDate;
         $this->endDate = $endDate;
         $this->stages = array();
+        $this->crews = new \Doctrine\Common\Collections\ArrayCollection;
     }
 
     /**
@@ -115,12 +116,22 @@ class Rally
 
     public function addStage(Stage $stage)
     {
-        $this->stages[] = $stage;
+        $this->stages[$stage->getNumber()] = $stage;
     }
 
     public function getStages()
     {
         return $this->stages;
+    }
+
+    public function getStageByNumber($number)
+    {
+        return $this->stages[$number];
+    }
+
+    public function updateStage($stage)
+    {
+        $this->stages[$stage->getNumber()] = $stage;
     }
 
     public function addCrew(Crew $crew)
@@ -131,5 +142,16 @@ class Rally
     public function getCrews()
     {
         return $this->crews;
+    }
+
+    public function getCrewByNumber($number)
+    {
+        foreach ($this->crews as $crew) {
+            if ($crew->getNumber() == $number) {
+                return $crew;
+            }
+        }
+
+        return null;
     }
 }

@@ -6,6 +6,7 @@ use AppBundle\Document\Crew;
 use AppBundle\Document\CrewMember;
 use AppBundle\Document\Rally;
 use AppBundle\Document\Stage;
+use AppBundle\Document\StageResult;
 use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -102,7 +103,24 @@ class RallyController extends FOSRestController
 
         return $this->handleView($view);
     }
-    
+
+    public function getRalliesCrewsAction(Request $request, $rallyId)
+    {
+        $dm = $this->get('doctrine_mongodb')->getManager();
+        $rally = $dm->getRepository('AppBundle:Rally')->findOneById($rallyId);
+
+        if (empty($rally)) {
+            throw new HttpException(400, 'Cannot find rally');
+        }
+
+        $crews = $rally->getCrews();
+
+        $view = $this->view($crews, 200);
+
+        return $this->handleView($view);
+    }
+
+
     public function postRalliesCrewsAction(Request $request, $rallyId)
     {
         $dm = $this->get('doctrine_mongodb')->getManager();
@@ -147,6 +165,52 @@ class RallyController extends FOSRestController
         $dm->flush();
 
         $view = $this->view($crew, 201);
+
+        return $this->handleView($view);
+    }
+
+    public function postRalliesStagesResultsAction(Request $request, $rallyId, $stageNumber)
+    {
+        $dm = $this->get('doctrine_mongodb')->getManager();
+
+        $rally = $dm->getRepository('AppBundle:Rally')->findOneById($rallyId);
+        if (empty($rally)) {
+            throw new HttpException(400, 'Cannot find rally');
+        }
+
+        $stage = $rally->getStageByNumber($stageNumber);
+        if (empty($stage)) {
+            throw new HttpException(400, 'Cannot find stage');
+        }
+
+        $crewNumber = $request->get('crewNumber');
+        $time = $request->get('time');
+        $penalty = $request->get('penalty');
+
+        if (empty($crewNumber) || empty($time)) {
+            throw new HttpException(400, 'Missing required parameters');
+        }
+
+        if (empty($penalty)) {
+            $penalty = 0;
+        }
+
+        $dm->refresh($rally);
+
+        $crew = $rally->getCrewByNumber($crewNumber);
+        if (empty($crew)) {
+            throw new HttpException(400, 'Cannot find crew');
+        }
+
+        $result = new StageResult($crew, $time, $penalty);
+        $stage->addResult($result);
+
+        $rally->updateStage($stage);
+
+        $dm->persist($rally);
+        $dm->flush();
+
+        $view = $this->view($result, 201);
 
         return $this->handleView($view);
     }
