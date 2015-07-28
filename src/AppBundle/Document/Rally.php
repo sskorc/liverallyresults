@@ -3,6 +3,7 @@
 namespace AppBundle\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * @MongoDB\Document
@@ -21,13 +22,21 @@ class Rally
 
     /**
      * @MongoDB\Date
+     * @JMS\SerializedName("startDate")
      */
     protected $startDate;
 
     /**
      * @MongoDB\Date
+     * @JMS\SerializedName("endDate")
      */
     protected $endDate;
+
+    /**
+     * @MongoDB\EmbedMany(targetDocument="AppBundle\Document\Stage")
+     * @JMS\Exclude
+     */
+    protected $stages;
 
     /**
      * @param string $name
@@ -39,6 +48,7 @@ class Rally
         $this->name = $name;
         $this->startDate = $startDate;
         $this->endDate = $endDate;
+        $this->stages = array();
     }
 
     /**
@@ -95,5 +105,15 @@ class Rally
     public function setEndDate($endDate)
     {
         $this->endDate = $endDate;
+    }
+
+    public function addStage(Stage $stage)
+    {
+        $this->stages[] = $stage;
+    }
+
+    public function getStages()
+    {
+        return $this->stages;
     }
 }
