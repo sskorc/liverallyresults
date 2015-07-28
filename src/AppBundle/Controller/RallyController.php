@@ -27,14 +27,14 @@ class RallyController extends FOSRestController
             throw new HttpException(400, 'Missing required parameters');
         }
 
-        $product = new Rally();
-        $product->setName($name);
+        $rally = new Rally();
+        $rally->setName($name);
 
         $dm = $this->get('doctrine_mongodb')->getManager();
-        $dm->persist($product);
+        $dm->persist($rally);
         $dm->flush();
 
-        $view = $this->view($product, 201);
+        $view = $this->view($rally, 201);
 
         return $this->handleView($view);
     }
