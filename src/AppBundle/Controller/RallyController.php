@@ -2,6 +2,8 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Document\Crew;
+use AppBundle\Document\CrewMember;
 use AppBundle\Document\Rally;
 use AppBundle\Document\Stage;
 use FOS\RestBundle\Controller\FOSRestController;
@@ -97,6 +99,54 @@ class RallyController extends FOSRestController
         $dm->flush();
 
         $view = $this->view($stage, 201);
+
+        return $this->handleView($view);
+    }
+    
+    public function postRalliesCrewsAction(Request $request, $rallyId)
+    {
+        $dm = $this->get('doctrine_mongodb')->getManager();
+        $rally = $dm->getRepository('AppBundle:Rally')->findOneById($rallyId);
+
+        if (empty($rally)) {
+            throw new HttpException(400, 'Cannot find rally');
+        }
+
+        $number = $request->get('number');
+        $car = $request->get('car');
+        $group = $request->get('group');
+        $driverFirstName = $request->get('driverFirstName');
+        $driverLastName = $request->get('driverLastName');
+        $driverNationality = $request->get('driverNationality');
+        $coDriverFirstName = $request->get('coDriverFirstName');
+        $coDriverLastName = $request->get('coDriverLastName');
+        $coDriverNationality = $request->get('coDriverNationality');
+
+        if (empty($driverFirstName) || empty($driverLastName) || empty($driverNationality)
+            || empty($coDriverFirstName) || empty($coDriverLastName) || empty($coDriverNationality)
+            || empty($number) || empty($car) || empty($group)
+        ) {
+            throw new HttpException(400, 'Missing required parameters');
+        }
+
+        $crew = new Crew(
+            $number,
+            new CrewMember($driverFirstName, $driverLastName, $driverNationality),
+            new CrewMember($coDriverFirstName, $coDriverLastName, $coDriverNationality),
+            $car,
+            $group
+        );
+
+
+        $dm = $this->get('doctrine_mongodb')->getManager();
+        $dm->persist($crew);
+
+        $rally->addCrew($crew);
+        $dm->persist($rally);
+
+        $dm->flush();
+
+        $view = $this->view($crew, 201);
 
         return $this->handleView($view);
     }

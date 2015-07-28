@@ -39,6 +39,12 @@ class Rally
     protected $stages;
 
     /**
+     * @MongoDB\ReferenceMany(targetDocument="AppBundle\Document\Crew")
+     * @JMS\Exclude
+     */
+    protected $crews;
+
+    /**
      * @param string $name
      * @param \DateTime $startDate
      * @param \DateTime $endDate
@@ -115,5 +121,15 @@ class Rally
     public function getStages()
     {
         return $this->stages;
+    }
+
+    public function addCrew(Crew $crew)
+    {
+        $this->crews[] = $crew;
+    }
+
+    public function getCrews()
+    {
+        return $this->crews;
     }
 }

@@ -11,17 +11,23 @@ use JMS\Serializer\Annotation as JMS;
 class Crew
 {
     /**
-     * @MongoDB\Id(strategy="none")
+     * @MongoDB\Id(strategy="auto")
+     * @JMS\Exclude
+     */
+    protected $id;
+
+    /**
+     * @MongoDB\Integer
      */
     protected $number;
 
     /**
-     * @MongoDB\EmbedMany(targetDocument="AppBundle\Document\CrewMember")
+     * @MongoDB\EmbedOne(targetDocument="AppBundle\Document\CrewMember")
      */
     protected $driver;
 
     /**
-     * @MongoDB\EmbedMany(targetDocument="AppBundle\Document\CrewMember")
+     * @MongoDB\EmbedOne(targetDocument="AppBundle\Document\CrewMember")
      * @JMS\SerializedName("coDriver")
      */
     protected $coDriver;
@@ -43,6 +49,14 @@ class Crew
         $this->coDriver = $coDriver;
         $this->car = $car;
         $this->group = $group;
+    }
+
+    /**
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
     /**
