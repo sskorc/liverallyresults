@@ -38,7 +38,7 @@ class Stage
 
     public function __construct($number, $name, $startTime, $distance)
     {
-        $this->$results = array();
+        $this->results = array();
         $this->number = $number;
         $this->name = $name;
         $this->startTime = $startTime;
@@ -92,7 +92,7 @@ class Stage
                     return;
                 }
             }
-            array_push($this->results, $result);
+            $this->results[] = $result;
         } else {
             $this->results[0] = $result;
         }

@@ -223,7 +223,7 @@ class RallyController extends FOSRestController
             throw new HttpException(400, 'Cannot find crew');
         }
 
-        $result = new StageResult($crew, $time, $penalty);
+        $result = new StageResult($crew, (int) $time, (int) $penalty);
         $stage->addResult($result);
 
         $rally->updateStage($stage);
