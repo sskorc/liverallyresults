@@ -41,12 +41,12 @@ This command will build `web` Docker image and run its container together with `
 
 1. Log in to the container by running the following command:
     ```
-    docker exec -i -t dockersymfony_web_1 bash
+    docker exec -i -t liverallyresults_web_1 bash
     ```
 
 2. Install dependencies by running the following command:
     ```
-    cd /var/www/html/docker-symfony && composer install -n
+    cd /var/www/liverallyresults && composer install -n
     ```
 
 ### Update your hosts
@@ -57,7 +57,7 @@ This command will build `web` Docker image and run its container together with `
 
 2. Assuming its 192.168.59.103, add the following line to your `/etc/hosts` file:
     ```
-    192.168.59.103 docker-symfony.dev
+    192.168.59.103 liverallyresults.dev
     ```
 
 #### Linux
@@ -70,5 +70,5 @@ TBA
 
 2. Assuming its 192.168.59.103, add the following line to your `%SystemRoot%\System32\drivers\etc\hosts` file:
     ```
-    192.168.59.103 docker-symfony.dev
+    192.168.59.103 liverallyresults.dev
     ```
