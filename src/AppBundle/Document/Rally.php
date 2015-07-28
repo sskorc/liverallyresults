@@ -20,6 +20,28 @@ class Rally
     protected $name;
 
     /**
+     * @MongoDB\Date
+     */
+    protected $startDate;
+
+    /**
+     * @MongoDB\Date
+     */
+    protected $endDate;
+
+    /**
+     * @param string $name
+     * @param \DateTime $startDate
+     * @param \DateTime $endDate
+     */
+    public function __construct($name, $startDate, $endDate)
+    {
+        $this->name = $name;
+        $this->startDate = $startDate;
+        $this->endDate = $endDate;
+    }
+
+    /**
      * @return string
      */
     public function getId()
@@ -41,5 +63,37 @@ class Rally
     public function setName($name)
     {
         $this->name = $name;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getStartDate()
+    {
+        return $this->startDate;
+    }
+
+    /**
+     * @param \DateTime $startDate
+     */
+    public function setStartDate($startDate)
+    {
+        $this->startDate = $startDate;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getEndDate()
+    {
+        return $this->endDate;
+    }
+
+    /**
+     * @param \DateTime $endDate
+     */
+    public function setEndDate($endDate)
+    {
+        $this->endDate = $endDate;
     }
 }

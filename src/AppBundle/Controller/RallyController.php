@@ -22,13 +22,14 @@ class RallyController extends FOSRestController
     public function postRalliesAction(Request $request)
     {
         $name = $request->get('name');
+        $startDate = $request->get('startDate');
+        $endDate = $request->get('endDate');
 
-        if (empty($name)) {
+        if (empty($name) || empty($startDate) || empty($endDate)) {
             throw new HttpException(400, 'Missing required parameters');
         }
 
-        $rally = new Rally();
-        $rally->setName($name);
+        $rally = new Rally($name, new \DateTime($startDate), new \DateTime($endDate));
 
         $dm = $this->get('doctrine_mongodb')->getManager();
         $dm->persist($rally);
